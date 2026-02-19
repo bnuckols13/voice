@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Voice & Silence — Expressive Arts Group</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;600&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #1A1410;
+      --midnight: #0D1B2A;
+      --deep-navy: #162032;
+      --navy: #1E3A5F;
+      --parchment: #F5EED8;
+      --cream: #FAF6EC;
+      --warm-white: #FFF9F0;
+      --amber: #C8860A;
+      --gold: #D4A017;
+      --gold-light: #E8C547;
+      --silver: #B8C4CC;
+      --silver-light: #D8E4EC;
+      --mist: rgba(216, 228, 236, 0.15);
+      --text-on-dark: #EDE8DC;
+      --text-secondary: #9BAAB8;
+      --teal-accent: #4ECDC4;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      background: var(--midnight);
+      color: var(--text-on-dark);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* ── Atmospheric Background ── */
+    .atmosphere {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .atm-gradient {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 10%, rgba(30,58,95,0.6) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 80% at 85% 90%, rgba(14,30,22,0.5) 0%, transparent 55%),
+        radial-gradient(ellipse 40% 40% at 60% 40%, rgba(200,134,10,0.04) 0%, transparent 50%),
+        var(--midnight);
+    }
+
+    /* Sound wave lines */
+    .wave-lines {
+      position: absolute;
+      inset: 0;
+      opacity: 0.06;
+    }
+    .wave-lines svg { width: 100%; height: 100%; }
+
+    /* Floating ink blots */
+    .ink-blot {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.12;
+      animation: breathe 18s infinite ease-in-out;
+    }
+    .ink-blot:nth-child(1) { width: 400px; height: 400px; background: var(--navy); top: -100px; left: -100px; }
+    .ink-blot:nth-child(2) { width: 300px; height: 300px; background: var(--amber); bottom: 10%; right: -80px; animation-delay: -7s; opacity: 0.08; }
+    .ink-blot:nth-child(3) { width: 250px; height: 250px; background: #2A5F4F; top: 40%; left: 60%; animation-delay: -13s; }
+
+    @keyframes breathe {
+      0%, 100% { transform: scale(1) translate(0, 0); }
+      33% { transform: scale(1.15) translate(20px, -20px); }
+      66% { transform: scale(0.9) translate(-15px, 15px); }
+    }
+
+    /* ── Layout ── */
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── Header ── */
+    .header {
+      text-align: center;
+      padding: 4rem 0 2.5rem;
+      animation: pageIn 1.2s ease both;
+    }
+
+    .header-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      color: var(--amber);
+      text-transform: uppercase;
+      margin-bottom: 1.2rem;
+    }
+
+    .header h1 {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(2.2rem, 6vw, 4rem);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      line-height: 1.1;
+      color: var(--parchment);
+      margin-bottom: 0.5rem;
+    }
+
+    .header h1 em {
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      color: var(--gold-light);
+    }
+
+    .header-divider {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      justify-content: center;
+      margin: 1.2rem 0;
+    }
+    .header-divider span { display: block; height: 1px; width: 60px; background: linear-gradient(90deg, transparent, var(--amber), transparent); }
+    .header-divider .rune { color: var(--amber); font-size: 1rem; opacity: 0.7; }
+
+    .header-subtitle {
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--silver);
+      max-width: 500px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* ── Breath Orb ── */
+    .breath-orb-wrap {
+      display: flex;
+      justify-content: center;
+      margin: 2rem 0;
+      animation: pageIn 1.4s ease both;
+    }
+
+    .breath-orb {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(200,134,10,0.3) 0%, rgba(30,58,95,0.5) 70%, transparent 100%);
+      border: 1px solid rgba(200,134,10,0.3);
+      animation: orb-breathe 5s infinite ease-in-out;
+      cursor: pointer;
+      position: relative;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.3s ease;
+    }
+    .breath-orb:hover { border-color: var(--amber); box-shadow: 0 0 30px rgba(200,134,10,0.2); }
+    .breath-orb .orb-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.55rem;
+      letter-spacing: 0.15em;
+      color: var(--amber);
+      text-transform: uppercase;
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    @keyframes orb-breathe {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(200,134,10,0.1); }
+      50% { transform: scale(1.15); box-shadow: 0 0 40px rgba(200,134,10,0.2); }
+    }
+
+    /* ── Navigation ── */
+    .nav-wrap {
+      display: flex;
+      justify-content: center;
+      gap: 0.6rem;
+      margin-bottom: 2.5rem;
+      flex-wrap: wrap;
+      animation: pageIn 1s ease 0.2s both;
+    }
+
+    .nav-pill {
+      font-family: 'Cinzel', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.6rem 1.4rem;
+      border-radius: 30px;
+      border: 1px solid rgba(184,196,204,0.25);
+      background: rgba(255,255,255,0.04);
+      color: var(--silver);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .nav-pill:hover { border-color: var(--amber); color: var(--gold-light); background: rgba(200,134,10,0.08); }
+    .nav-pill.active {
+      background: rgba(200,134,10,0.15);
+      border-color: var(--amber);
+      color: var(--gold-light);
+      box-shadow: 0 0 20px rgba(200,134,10,0.1);
+    }
+
+    /* ── Pages ── */
+    .page { display: none; }
+    .page.active { display: block; animation: pageIn 0.7s ease both; }
+    @keyframes pageIn {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Cards ── */
+    .card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(184,196,204,0.12);
+      border-radius: 16px;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s ease;
+    }
+    .card:hover { border-color: rgba(200,134,10,0.25); }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--amber), transparent);
+      opacity: 0.5;
+    }
+
+    .card-dark {
+      background: rgba(13,27,42,0.6);
+      border-color: rgba(200,134,10,0.2);
+    }
+
+    .section-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      color: var(--amber);
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+    }
+
+    .card h2 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--parchment);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .card h3 {
+      font-family: 'IM Fell English', serif;
+      font-size: 1.2rem;
+      font-style: italic;
+      color: var(--gold-light);
+      margin-bottom: 0.75rem;
+    }
+
+    .card p {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      color: var(--text-on-dark);
+    }
+
+    /* ── Quote Block ── */
+    .quote-block {
+      background: rgba(200,134,10,0.06);
+      border-left: 3px solid var(--amber);
+      border-radius: 0 12px 12px 0;
+      padding: 1.5rem 2rem;
+      margin: 1.5rem 0;
+    }
+    .quote-block blockquote {
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      font-size: 1.25rem;
+      line-height: 1.7;
+      color: var(--parchment);
+      margin-bottom: 0.75rem;
+    }
+    .quote-block cite {
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      color: var(--amber);
+      text-transform: uppercase;
+    }
+
+    /* ── Meditation Box ── */
+    .meditation-box {
+      background: radial-gradient(ellipse at center, rgba(30,58,95,0.5) 0%, rgba(13,27,42,0.8) 100%);
+      border: 1px solid rgba(200,134,10,0.2);
+      border-radius: 16px;
+      padding: 2.5rem 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .meditation-box::after {
+      content: '';
+      position: absolute;
+      inset: -50%;
+      background: radial-gradient(ellipse at center, rgba(200,134,10,0.03) 0%, transparent 60%);
+      animation: pulse-glow 6s infinite ease-in-out;
+    }
+    @keyframes pulse-glow {
+      0%, 100% { transform: scale(1); opacity: 0.5; }
+      50% { transform: scale(1.2); opacity: 1; }
+    }
+    .meditation-box h3 {
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+      letter-spacing: 0.15em;
+      color: var(--gold-light);
+      margin-bottom: 1.5rem;
+      position: relative; z-index: 1;
+    }
+    .meditation-text {
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      font-size: 1.05rem;
+      line-height: 2;
+      color: var(--text-on-dark);
+      max-width: 680px;
+      margin: 0 auto;
+      position: relative; z-index: 1;
+    }
+    .meditation-text p { margin-bottom: 1rem; }
+
+    /* ── Psychoed Cards (Expandable) ── */
+    .psych-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(184,196,204,0.1);
+      border-radius: 12px;
+      margin-bottom: 1rem;
+      overflow: hidden;
+      transition: border-color 0.3s ease;
+    }
+    .psych-card:hover { border-color: rgba(200,134,10,0.3); }
+
+    .psych-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.2rem 1.5rem;
+      cursor: pointer;
+      user-select: none;
+    }
+    .psych-header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .psych-icon {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      background: rgba(200,134,10,0.12);
+      border: 1px solid rgba(200,134,10,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .psych-title {
+      font-family: 'Cinzel', serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      color: var(--parchment);
+    }
+    .psych-chevron {
+      color: var(--amber);
+      font-size: 0.8rem;
+      transition: transform 0.3s ease;
+    }
+    .psych-card.open .psych-chevron { transform: rotate(180deg); }
+
+    .psych-body {
+      display: none;
+      padding: 0 1.5rem 1.5rem;
+      border-top: 1px solid rgba(184,196,204,0.08);
+    }
+    .psych-card.open .psych-body { display: block; animation: pageIn 0.4s ease; }
+    .psych-body p {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: var(--text-on-dark);
+      margin-top: 1rem;
+    }
+    .psych-body ul {
+      margin-top: 0.8rem;
+      padding-left: 1.2rem;
+    }
+    .psych-body li {
+      font-size: 0.98rem;
+      line-height: 1.9;
+      color: var(--text-on-dark);
+      margin-bottom: 0.2rem;
+    }
+    .psych-body .highlight {
+      background: rgba(200,134,10,0.1);
+      border-left: 2px solid var(--amber);
+      padding: 0.75rem 1rem;
+      border-radius: 0 8px 8px 0;
+      margin-top: 1rem;
+      font-size: 0.95rem;
+      font-style: italic;
+      color: var(--parchment);
+    }
+
+    /* ── Station Cards ── */
+    .station-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.2rem;
+    }
+
+    .station-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(184,196,204,0.1);
+      border-radius: 14px;
+      padding: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      animation: pageIn 0.6s ease both;
+    }
+    .station-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(200,134,10,0.4);
+      background: rgba(200,134,10,0.05);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .station-card.expanded { border-color: var(--amber); background: rgba(200,134,10,0.07); }
+
+    .station-num {
+      font-family: 'Cinzel', serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      color: var(--amber);
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+    .station-name {
+      font-family: 'Cinzel', serif;
+      font-size: 1.05rem;
+      color: var(--parchment);
+      margin-bottom: 0.3rem;
+    }
+    .station-tagline {
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      font-size: 0.95rem;
+      color: var(--silver);
+      margin-bottom: 1rem;
+    }
+    .station-prompts {
+      display: none;
+      border-top: 1px solid rgba(200,134,10,0.2);
+      padding-top: 1rem;
+      margin-top: 0.5rem;
+      animation: pageIn 0.4s ease;
+    }
+    .station-card.expanded .station-prompts { display: block; }
+
+    .station-prompts p {
+      font-size: 0.9rem;
+      line-height: 1.7;
+      color: var(--silver);
+      margin-bottom: 0.5rem;
+    }
+    .station-prompts ol {
+      padding-left: 1.2rem;
+    }
+    .station-prompts li {
+      font-size: 0.93rem;
+      line-height: 1.75;
+      color: var(--text-on-dark);
+      margin-bottom: 0.6rem;
+    }
+    .station-prompts li em {
+      color: var(--silver);
+      font-style: italic;
+    }
+
+    .pass-note {
+      margin-top: 1rem;
+      padding: 0.6rem 0.9rem;
+      background: rgba(78,205,196,0.08);
+      border-radius: 8px;
+      border: 1px solid rgba(78,205,196,0.15);
+      font-size: 0.82rem;
+      color: var(--teal-accent);
+      font-family: 'Cinzel', serif;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── Voice/Silence Toggle ── */
+    .vs-toggle {
+      display: flex;
+      gap: 0;
+      border: 1px solid rgba(200,134,10,0.3);
+      border-radius: 30px;
+      overflow: hidden;
+      width: fit-content;
+      margin: 1rem auto 1.5rem;
+    }
+    .vs-btn {
+      padding: 0.5rem 1.5rem;
+      font-family: 'Cinzel', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      color: var(--silver);
+      transition: all 0.3s ease;
+    }
+    .vs-btn.active-voice { background: rgba(200,134,10,0.2); color: var(--gold-light); }
+    .vs-btn.active-silence { background: rgba(184,196,204,0.1); color: var(--silver-light); }
+
+    /* ── Reflection Section ── */
+    .reflection-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.2rem;
+      margin-top: 1.2rem;
+    }
+    @media (max-width: 640px) { .reflection-grid { grid-template-columns: 1fr; } }
+
+    .reflect-item label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      color: var(--amber);
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    .reflect-item textarea {
+      width: 100%;
+      min-height: 110px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(184,196,204,0.2);
+      border-radius: 10px;
+      padding: 1rem;
+      color: var(--parchment);
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1rem;
+      line-height: 1.6;
+      resize: vertical;
+      transition: border-color 0.3s ease;
+    }
+    .reflect-item textarea:focus {
+      outline: none;
+      border-color: var(--amber);
+      box-shadow: 0 0 0 3px rgba(200,134,10,0.1);
+    }
+    .reflect-item textarea::placeholder { color: rgba(184,196,204,0.3); }
+
+    .reflect-full { grid-column: 1 / -1; }
+
+    .btn {
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.75rem 2rem;
+      border-radius: 30px;
+      border: 1px solid var(--amber);
+      background: rgba(200,134,10,0.12);
+      color: var(--gold-light);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-right: 0.75rem;
+      margin-top: 1rem;
+    }
+    .btn:hover { background: rgba(200,134,10,0.25); box-shadow: 0 4px 20px rgba(200,134,10,0.2); }
+    .btn-ghost {
+      background: transparent;
+      border-color: rgba(184,196,204,0.25);
+      color: var(--silver);
+    }
+    .btn-ghost:hover { border-color: var(--silver); background: rgba(255,255,255,0.05); }
+
+    /* ── Closing ── */
+    .closing-card {
+      background: linear-gradient(135deg, rgba(30,58,95,0.4) 0%, rgba(13,27,42,0.8) 100%);
+      border: 1px solid rgba(200,134,10,0.25);
+      border-radius: 16px;
+      padding: 2.5rem;
+      text-align: center;
+    }
+    .closing-card h3 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.1rem;
+      letter-spacing: 0.1em;
+      color: var(--gold-light);
+      margin-bottom: 1.5rem;
+    }
+    .closing-card p {
+      font-family: 'IM Fell English', serif;
+      font-style: italic;
+      font-size: 1.05rem;
+      line-height: 1.9;
+      color: var(--text-on-dark);
+      margin-bottom: 1rem;
+    }
+
+    /* Crisis */
+    .crisis-bar {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(78,205,196,0.15);
+      border-radius: 10px;
+      padding: 1rem 1.5rem;
+      margin-top: 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 2rem;
+      align-items: center;
+    }
+    .crisis-bar span {
+      font-family: 'Cinzel', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      color: var(--teal-accent);
+    }
+    .crisis-bar a {
+      font-size: 0.85rem;
+      color: var(--silver);
+      text-decoration: none;
+    }
+    .crisis-bar a:hover { color: var(--parchment); }
+
+    /* Saved indicator */
+    #saved-note {
+      font-family: 'Cinzel', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      color: var(--teal-accent);
+      display: none;
+      margin-top: 0.5rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .header { padding: 2rem 0 1.5rem; }
+      .container { padding: 1rem 1rem 3rem; }
+      .card { padding: 1.5rem; }
+      .station-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="atmosphere">
+  <div class="atm-gradient"></div>
+  <div class="wave-lines">
+    <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+      <g stroke="rgba(200,134,10,0.4)" stroke-width="0.5" fill="none">
+        <path d="M0,450 Q180,380 360,450 T720,450 T1080,450 T1440,450" />
+        <path d="M0,420 Q180,340 360,420 T720,420 T1080,420 T1440,420" />
+        <path d="M0,480 Q180,420 360,480 T720,480 T1080,480 T1440,480" />
+        <path d="M0,390 Q180,300 360,390 T720,390 T1080,390 T1440,390" />
+        <path d="M0,510 Q180,460 360,510 T720,510 T1080,510 T1440,510" />
+      </g>
+    </svg>
+  </div>
+  <div class="ink-blot"></div>
+  <div class="ink-blot"></div>
+  <div class="ink-blot"></div>
+</div>
+
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <p class="header-eyebrow">Expressive Arts Group · Session 19</p>
+    <h1>Voice &amp; <em>Silence</em></h1>
+    <div class="header-divider">
+      <span></span><span class="rune">᛭</span><span></span>
+    </div>
+    <p class="header-subtitle">What we say, what we swallow,<br>what lives in the space between words</p>
+  </div>
+
+  <!-- Breath Orb -->
+  <div class="breath-orb-wrap" aria-label="Breathing guide — expand and contract with this orb">
+    <div class="breath-orb" id="breathOrb">
+      <span class="orb-label">Breathe<br>with me</span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="nav-wrap" role="navigation" aria-label="Session pages">
+    <button class="nav-pill active" onclick="showPage(0)" aria-label="Opening page">I · Opening</button>
+    <button class="nav-pill" onclick="showPage(1)" aria-label="Psychoeducation page">II · The Science</button>
+    <button class="nav-pill" onclick="showPage(2)" aria-label="Seven Stations page">III · Seven Stations</button>
+    <button class="nav-pill" onclick="showPage(3)" aria-label="Integration page">IV · Integration</button>
+  </nav>
+
+  <!-- ═══════════════════════════════════════
+       PAGE I — Opening
+  ═══════════════════════════════════════ -->
+  <div class="page active" id="page0">
+
+    <div class="card">
+      <div class="section-eyebrow">Process Over Product</div>
+      <h2>A Reminder Before We Begin</h2>
+      <p>There is no right way to do this work. The goal is not a beautiful creation — the goal is an honest one. You may not finish a station. You may sit in stillness for a full round. You may make something private that only you see. All of this is exactly right.</p>
+      <p style="margin-top:1rem;">In this group, silence is never empty. It is one of the most powerful forms of expression we have.</p>
+    </div>
+
+    <div class="quote-block">
+      <blockquote>"Your silence will not protect you. But for every real word spoken, for every attempt I had ever made to speak those truths for which I am still seeking, I had made contact with other women while we examined the words to fit a world in which we all believed."</blockquote>
+      <cite>— Audre Lorde, The Cancer Journals</cite>
+    </div>
+
+    <div class="meditation-box">
+      <h3>Opening Meditation</h3>
+      <div class="meditation-text">
+        <p>Find a comfortable position and allow your eyes to soften or close.</p>
+        <p>Begin by noticing the sounds in this room — let them wash over you without naming them. Just receive them.</p>
+        <p>Now draw your attention inward. Notice the sound of your own breath. The small creak of your exhale. The quiet between inhale and exhale — that pause that belongs to no one, that exists in pure stillness.</p>
+        <p>Now I want you to notice: somewhere in your body, there is a voice. Not necessarily the one you use to speak — but the one that knows things. The one that has things to say that you haven't found words for yet.</p>
+        <p>Today, we create space for that voice. We also honor the silence it sometimes chooses.</p>
+        <p>Place one hand on your throat, lightly. Notice what it feels like to hold this place of sound-making.</p>
+        <p>Take one breath in. Let it out slowly, as sound — even a whisper, even a sigh. Let that be enough.</p>
+        <p>Open your eyes when you're ready.</p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:1.5rem;">
+      <div class="section-eyebrow">Therapeutic Frame</div>
+      <h2>Why Voice &amp; Silence?</h2>
+      <p>Voice is not only what we say aloud. It is how we claim our existence in relationship — to others, to ourselves. Silence is not only absence. It can be a refuge, a protest, a form of protection, a place of deep knowing.</p>
+      <p style="margin-top:1rem;">In recovery, in healing, in finding our way back to ourselves, we encounter both: the words we've been waiting to speak, and the silences that have kept us safe (or kept us small). Today we explore both without judgment — honoring the wisdom in each.</p>
+
+      <div style="display:flex; flex-wrap:wrap; gap:0.75rem; margin-top:1.5rem;">
+        <span style="font-family:'Cinzel',serif; font-size:0.7rem; letter-spacing:0.1em; background:rgba(200,134,10,0.1); border:1px solid rgba(200,134,10,0.2); border-radius:20px; padding:0.4rem 1rem; color:var(--amber);">NVC</span>
+        <span style="font-family:'Cinzel',serif; font-size:0.7rem; letter-spacing:0.1em; background:rgba(200,134,10,0.1); border:1px solid rgba(200,134,10,0.2); border-radius:20px; padding:0.4rem 1rem; color:var(--amber);">Polyvagal Theory</span>
+        <span style="font-family:'Cinzel',serif; font-size:0.7rem; letter-spacing:0.1em; background:rgba(200,134,10,0.1); border:1px solid rgba(200,134,10,0.2); border-radius:20px; padding:0.4rem 1rem; color:var(--amber);">IFS Parts Work</span>
+        <span style="font-family:'Cinzel',serif; font-size:0.7rem; letter-spacing:0.1em; background:rgba(200,134,10,0.1); border:1px solid rgba(200,134,10,0.2); border-radius:20px; padding:0.4rem 1rem; color:var(--amber);">Narrative Therapy</span>
+        <span style="font-family:'Cinzel',serif; font-size:0.7rem; letter-spacing:0.1em; background:rgba(200,134,10,0.1); border:1px solid rgba(200,134,10,0.2); border-radius:20px; padding:0.4rem 1rem; color:var(--amber);">Buddhist Psychology</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       PAGE II — The Science
+  ═══════════════════════════════════════ -->
+  <div class="page" id="page1">
+
+    <div class="card">
+      <div class="section-eyebrow">Psychoeducation</div>
+      <h2>Understanding Voice &amp; Silence</h2>
+      <p>Tap any card to explore the science and wisdom behind today's theme.</p>
+    </div>
+
+    <!-- Card 1: Polyvagal -->
+    <div class="psych-card" onclick="togglePsych(this)">
+      <div class="psych-header">
+        <div class="psych-header-left">
+          <div class="psych-icon">〰</div>
+          <span class="psych-title">The Vocal Nervous System</span>
+        </div>
+        <span class="psych-chevron">▾</span>
+      </div>
+      <div class="psych-body">
+        <p>Your voice is a direct expression of your nervous system state. The social engagement system — the ventral vagal branch — actually innervates the muscles of your face, throat, and ears. When you feel safe, your voice carries warmth, rhythm, and melody. When your system detects danger, your vocal prosody flattens, speeds up, or disappears entirely.</p>
+        <p>This means that the quality of your voice — not just the words — communicates safety or threat to everyone who hears you. And when you hear a warm, rhythmic voice, your own nervous system co-regulates in response.</p>
+        <div class="highlight">Notice: What does your voice sound like when you are most yourself? What happens to it when you feel unsafe, unheard, or unseen?</div>
+      </div>
+    </div>
+
+    <!-- Card 2: Silences -->
+    <div class="psych-card" onclick="togglePsych(this)">
+      <div class="psych-header">
+        <div class="psych-header-left">
+          <div class="psych-icon">◯</div>
+          <span class="psych-title">The Many Kinds of Silence</span>
+        </div>
+        <span class="psych-chevron">▾</span>
+      </div>
+      <div class="psych-body">
+        <p>Not all silence is the same. Learning to distinguish between different silences can help us understand what our nervous systems and our inner worlds are doing.</p>
+        <ul>
+          <li><strong>Restorative silence</strong> — the peace of not needing to perform or explain. A pause in good company.</li>
+          <li><strong>Protective silence</strong> — the quiet we retreat into when speech feels too dangerous. A part keeping us safe.</li>
+          <li><strong>Suppressed silence</strong> — words swallowed. Things we know but have decided (or been taught) cannot be said.</li>
+          <li><strong>Sacred silence</strong> — the deliberate, chosen stillness of contemplative practice. The space between notes.</li>
+          <li><strong>Frozen silence</strong> — the dissociated quiet of overwhelm, when the nervous system goes offline.</li>
+        </ul>
+        <div class="highlight">Which of these silences do you know well? Which have you lived in most?</div>
+      </div>
+    </div>
+
+    <!-- Card 3: What We Swallow -->
+    <div class="psych-card" onclick="togglePsych(this)">
+      <div class="psych-header">
+        <div class="psych-header-left">
+          <div class="psych-icon">▽</div>
+          <span class="psych-title">What We Swallow</span>
+        </div>
+        <span class="psych-chevron">▾</span>
+      </div>
+      <div class="psych-body">
+        <p>Narrative therapy teaches us that our stories shape our identities — and that many of our most limiting stories were authored by others. We internalize the voices of people who told us we were too loud, too much, too sensitive, wrong to feel what we felt. Over time, those external voices can become an internal censor that silences us before we even begin.</p>
+        <p>The throat — symbolically and somatically — is the place where voice meets decision. Where "will I speak or not?" lives in the body. Many of us hold chronic tension there, a kind of permanent swallowing of the things we couldn't safely say.</p>
+        <div class="highlight">What story lives in your throat? What part of you has been doing the swallowing — and what might it need?</div>
+      </div>
+    </div>
+
+    <!-- Card 4: IFS and the Parts -->
+    <div class="psych-card" onclick="togglePsych(this)">
+      <div class="psych-header">
+        <div class="psych-header-left">
+          <div class="psych-icon">❋</div>
+          <span class="psych-title">IFS: Parts That Speak &amp; Parts That Silence</span>
+        </div>
+        <span class="psych-chevron">▾</span>
+      </div>
+      <div class="psych-body">
+        <p>In Internal Family Systems, we understand that different parts of us have very different relationships to voice. Some parts are outspoken — the ones that demand, protest, explain, or perform. Other parts are the silencers — protectors that learned it wasn't safe to speak, or that speech always led to hurt.</p>
+        <p>Neither is wrong. Both are trying to help the system survive.</p>
+        <p>The invitation is to get curious about which part is in charge of your voice in different moments. The part that performs confidence at work. The part that goes quiet in conflict. The part that whispers your deepest truths only to yourself.</p>
+        <div class="highlight">Can you notice two different parts — one that wants to speak and one that wants to stay quiet? What does each one need right now?</div>
+      </div>
+    </div>
+
+    <!-- Card 5: NVC and Expression -->
+    <div class="psych-card" onclick="togglePsych(this)">
+      <div class="psych-header">
+        <div class="psych-header-left">
+          <div class="psych-icon">◈</div>
+          <span class="psych-title">NVC: Voice as Needs in Motion</span>
+        </div>
+        <span class="psych-chevron">▾</span>
+      </div>
+      <div class="psych-body">
+        <p>Marshall Rosenberg taught that underneath every word — every criticism, every silence, every demand — is a need seeking to be met. When we speak reactively, we are often voicing a need in its most disguised form. When we go silent, we are often protecting a need that feels too vulnerable to name.</p>
+        <p>Finding our voice in NVC is not about speaking more — it's about speaking from the truth beneath the armor. Observation, feeling, need, request: a path from reactivity to genuine contact.</p>
+        <div class="highlight">What need is waiting to be voiced in you today? Not the argument — the need underneath it.</div>
+      </div>
+    </div>
+
+    <!-- Card 6: Buddhist Noble Silence -->
+    <div class="psych-card" onclick="togglePsych(this)">
+      <div class="psych-header">
+        <div class="psych-header-left">
+          <div class="psych-icon">☽</div>
+          <span class="psych-title">Noble Silence &amp; Mindful Speech</span>
+        </div>
+        <span class="psych-chevron">▾</span>
+      </div>
+      <div class="psych-body">
+        <p>Buddhist psychology distinguishes between <em>noble silence</em> — the purposeful, spacious quiet that allows wisdom to arise — and the silence of avoidance or suppression. Noble silence is not emptiness. It is presence without the compulsive filling of space with words.</p>
+        <p>Right Speech, one of the eight limbs of the Noble Eightfold Path, asks us: Is it true? Is it kind? Is it helpful? Is it the right time? When all four conditions are met, speak. When they are not, noble silence may be the wiser choice.</p>
+        <div class="highlight">When have you experienced noble silence — a quiet that felt full rather than empty? What made it different?</div>
+      </div>
+    </div>
+
+    <!-- Card 7: Process Over Perfection -->
+    <div class="psych-card" onclick="togglePsych(this)">
+      <div class="psych-header">
+        <div class="psych-header-left">
+          <div class="psych-icon">∿</div>
+          <span class="psych-title">Process Over Perfection</span>
+        </div>
+        <span class="psych-chevron">▾</span>
+      </div>
+      <div class="psych-body">
+        <p>Perfectionism is one of the most common ways we silence ourselves before we even begin. It says: <em>only speak when you have it right. Only create when the result will be beautiful. Only share when you are certain.</em> And so we wait — sometimes forever — for a readiness that perfectionism never allows.</p>
+        <p>Research on creativity and healing consistently shows that the <em>process</em> of making — not the product — is where transformation lives. The act of moving a brush, of writing a messy first sentence, of humming something with no melody — these are neurologically regulating. They shift our state. The finished piece is a byproduct of a process that was already doing its work.</p>
+        <ul>
+          <li><strong>The inner critic speaks in finished products.</strong> It evaluates outcomes. But the present moment of making has no outcome yet — only experience.</li>
+          <li><strong>Mistakes are data, not verdicts.</strong> When your voice cracks, when the drawing looks "wrong," when the movement feels awkward — these are the moments most worth staying with.</li>
+          <li><strong>The body doesn't care about beauty.</strong> It cares about expression. Release. Contact. Movement. The nervous system responds to the act of making regardless of what gets made.</li>
+        </ul>
+        <div class="highlight">Notice: Is there a part of you waiting until you can do this "right"? What would it mean to begin anyway — imperfectly, honestly, now?</div>
+      </div>
+    </div>
+
+    <!-- Card 8: Nervous System Regulation -->
+    <div class="psych-card" onclick="togglePsych(this)">
+      <div class="psych-header">
+        <div class="psych-header-left">
+          <div class="psych-icon">⌁</div>
+          <span class="psych-title">Regulation &amp; the Window of Tolerance</span>
+        </div>
+        <span class="psych-chevron">▾</span>
+      </div>
+      <div class="psych-body">
+        <p>Your nervous system exists on a spectrum. At the center is your <em>window of tolerance</em> — the zone where you can think, feel, and engage at the same time. This is where learning, connection, and creativity are most available. When we move outside this window — into overwhelm above, or shutdown below — expression becomes harder and protection takes over.</p>
+        <p>Both hyperarousal and hypoarousal are deeply connected to voice and silence:</p>
+        <ul>
+          <li><strong>Hyperarousal</strong> (above the window): Voice becomes reactive — loud, fast, pressured. Words spill before they're chosen. This is fight/flight speaking.</li>
+          <li><strong>Hypoarousal</strong> (below the window): Voice disappears. Throat tightens. We freeze or collapse. This is shutdown silence — not chosen, but imposed by the nervous system for protection.</li>
+          <li><strong>Within the window</strong>: Voice can be <em>chosen</em>. Silence can be <em>chosen</em>. Expression becomes genuine rather than reactive or shut-down.</li>
+        </ul>
+        <p>Expressive arts work — movement, sound, image-making — is one of the most reliable ways to return to the window when we've drifted. The body finds regulation through <em>doing</em>, often before the mind catches up.</p>
+        <div class="highlight">Right now, where do you sense yourself? In your window? Edging toward overwhelm? Tending toward quiet or flatness? There is no wrong answer — just useful information.</div>
+        <div style="margin-top:1.2rem; display:flex; flex-direction:column; gap:0.5rem;">
+          <div style="padding:0.6rem 1rem; background:rgba(255,100,80,0.08); border-left:2px solid rgba(255,120,80,0.5); border-radius:0 8px 8px 0; font-size:0.9rem; color:var(--text-on-dark);">
+            <strong style="color:#F4967A;">Hyperarousal</strong> — racing, flooding, reactive voice
+          </div>
+          <div style="padding:0.6rem 1rem; background:rgba(78,205,196,0.08); border-left:2px solid var(--teal-accent); border-radius:0 8px 8px 0; font-size:0.9rem; color:var(--text-on-dark);">
+            <strong style="color:var(--teal-accent);">Window of Tolerance</strong> — present, expressive, connected
+          </div>
+          <div style="padding:0.6rem 1rem; background:rgba(147,165,207,0.08); border-left:2px solid rgba(147,165,207,0.5); border-radius:0 8px 8px 0; font-size:0.9rem; color:var(--text-on-dark);">
+            <strong style="color:var(--silver-light);">Hypoarousal</strong> — numb, flat, voice retreats inward
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       PAGE III — Seven Stations
+  ═══════════════════════════════════════ -->
+  <div class="page" id="page2">
+
+    <div class="card">
+      <div class="section-eyebrow">Expressive Arts</div>
+      <h2>Seven Stations</h2>
+      <p>Move freely between stations. Stay as long as you need. Skip any that don't feel right. There is no order, no comparison, no finished product required. Let the materials meet you where you are.</p>
+
+      <div class="vs-toggle" role="group" aria-label="Voice or Silence orientation">
+        <button class="vs-btn active-voice" id="voiceBtn" onclick="setOrientation('voice')">Voice</button>
+        <button class="vs-btn" id="silenceBtn" onclick="setOrientation('silence')">Silence</button>
+      </div>
+      <p id="vs-desc" style="text-align:center; font-family:'IM Fell English',serif; font-style:italic; font-size:0.95rem; color:var(--silver); max-width:500px; margin:0 auto 1rem;">Exploring what wants to be expressed today</p>
+    </div>
+
+    <div class="station-grid">
+
+      <!-- 1. Visual Arts -->
+      <div class="station-card" onclick="toggleStation(this)" style="animation-delay:0s">
+        <div class="station-num">Station I</div>
+        <div class="station-name">Visual Arts</div>
+        <div class="station-tagline">The Unsaid, Made Visible</div>
+        <p style="font-size:0.88rem; color:var(--silver); line-height:1.6;">Drawing, painting, collage, mark-making</p>
+        <div class="station-prompts">
+          <ol>
+            <li>Draw or paint your voice — not what it says, but what it <em>looks like</em>. Shape, color, texture, weight.</li>
+            <li>Create a map of your silences. Where do you go quiet? Where are you loudest? What does each territory look like?</li>
+            <li>Make "The Unsaid Letter" — a visual piece representing something you have never been able to put into words. No words needed. Just image.</li>
+            <li>Draw the throat as a landscape. What lives there? What is growing? What is held?</li>
+            <li>Create a portrait of yourself with the voice you were born with — before you learned to modify it.</li>
+          </ol>
+          <div class="pass-note">✦ This station is always optional. You may observe, sketch quietly, or simply be present here.</div>
+        </div>
+      </div>
+
+      <!-- 2. Movement -->
+      <div class="station-card" onclick="toggleStation(this)" style="animation-delay:0.08s">
+        <div class="station-num">Station II</div>
+        <div class="station-name">Movement &amp; Dance</div>
+        <div class="station-tagline">What the Body Says</div>
+        <p style="font-size:0.88rem; color:var(--silver); line-height:1.6;">Somatic movement, gesture, breath-led motion</p>
+        <div class="station-prompts">
+          <ol>
+            <li>Move like a sound wave — let your whole body trace the shape of sound through air. Big waves. Tiny ripples. Stillness between.</li>
+            <li>Explore "swallowing" as a physical act. What does your body do when you swallow a word? Where does it go? Move that story.</li>
+            <li>Find the movement of your truest voice — not performed, not shaped for others. What does <em>that</em> look like in your body?</li>
+            <li>Alternate between taking up space and collapsing. Notice when each feels like speaking, and when each feels like silence.</li>
+            <li>Move in silence for one full minute. Then let sound enter the movement. What changes?</li>
+          </ol>
+          <div class="pass-note">✦ Seated, standing, gentle stretching — all movement is valid here. Do only what is comfortable for your body.</div>
+        </div>
+      </div>
+
+      <!-- 3. Music/Sound -->
+      <div class="station-card" onclick="toggleStation(this)" style="animation-delay:0.16s">
+        <div class="station-num">Station III</div>
+        <div class="station-name">Music &amp; Sound</div>
+        <div class="station-tagline">Breath Is the First Instrument</div>
+        <p style="font-size:0.88rem; color:var(--silver); line-height:1.6;">Humming, breath, percussion, ambient sound</p>
+        <div class="station-prompts">
+          <ol>
+            <li>Hum something — not a song, just a sound that wants to come out. Let it be wordless. Let it change.</li>
+            <li>Create a "sound portrait" of a silence you know well — using breath, rhythm, or the instruments here, make silence audible.</li>
+            <li>Whisper something true. Then say it aloud. Then say it again louder. Notice what shifts in your body at each volume.</li>
+            <li>Create a 13-beat rhythm that alternates between sound and silence. This is the rhythm of voice — the space between notes matters as much as the notes themselves.</li>
+            <li>Sit in intentional silence for three minutes. What sounds do you notice? What arises in the absence of speech?</li>
+          </ol>
+          <div class="pass-note">✦ You may use any instrument, your voice, or simply your breath at this station.</div>
+        </div>
+      </div>
+
+      <!-- 4. Writing -->
+      <div class="station-card" onclick="toggleStation(this)" style="animation-delay:0.24s">
+        <div class="station-num">Station IV</div>
+        <div class="station-name">Writing &amp; Poetry</div>
+        <div class="station-tagline">The Letter Never Sent</div>
+        <p style="font-size:0.88rem; color:var(--silver); line-height:1.6;">Journaling, poetry, lists, letters</p>
+        <div class="station-prompts">
+          <ol>
+            <li>Write the letter you have never sent. You do not have to send it today. You do not even have to finish it. Just begin.</li>
+            <li>Write a list: "Things I say." Then write: "Things I have never said." Let the second list be as long as it wants to be.</li>
+            <li>Describe your silence in the third person — as if it were a character. Who is it? What does it protect? What does it need?</li>
+            <li>Write about a time you spoke and wished you hadn't. Then write about a time you stayed silent and wished you hadn't. What do these stories share?</li>
+            <li>Finish this sentence as many ways as you can: "What I have always wanted to say is…"</li>
+          </ol>
+          <div class="pass-note">✦ Nothing written here needs to be shared. These words belong to you.</div>
+        </div>
+      </div>
+
+      <!-- 5. Drama -->
+      <div class="station-card" onclick="toggleStation(this)" style="animation-delay:0.32s">
+        <div class="station-num">Station V</div>
+        <div class="station-name">Drama &amp; Performance</div>
+        <div class="station-tagline">The Moment Before Speaking</div>
+        <p style="font-size:0.88rem; color:var(--silver); line-height:1.6;">Role play, embodiment, tableau, voice work</p>
+        <div class="station-prompts">
+          <ol>
+            <li>Enact "the moment before speaking" — the pause where the decision is made. Make it long, visible, physical. What lives in that pause?</li>
+            <li>Play a scene where two people communicate entirely without words. What gets through? What is lost?</li>
+            <li>Give voice to the part of you that has been silent the longest. What does it want to say, now that it finally has the stage?</li>
+            <li>Practice saying something difficult — something you've rehearsed internally. Say it to the room, or to an empty chair, or to a mirror. Notice the difference between the rehearsal and the saying.</li>
+            <li>Create a brief tableau — a frozen moment — of speaking your truth. Hold it. Then let it thaw.</li>
+          </ol>
+          <div class="pass-note">✦ You may work solo, in pairs, or as an observer at this station.</div>
+        </div>
+      </div>
+
+      <!-- 6. Fashion -->
+      <div class="station-card" onclick="toggleStation(this)" style="animation-delay:0.40s">
+        <div class="station-num">Station VI</div>
+        <div class="station-name">Fashion &amp; Adornment</div>
+        <div class="station-tagline">Adorning the Place of Voice</div>
+        <p style="font-size:0.88rem; color:var(--silver); line-height:1.6;">Collage, wearable art, decoration, crafting</p>
+        <div class="station-prompts">
+          <ol>
+            <li>Create an adornment for the throat — a collar, a necklace, a scarf, or simply a drawn piece worn at the neck. What do you want to protect there? What do you want to celebrate?</li>
+            <li>Design something that represents your voice at its most free. What would you wear if you were speaking your fullest truth?</li>
+            <li>Create a visual symbol for a silence you are ready to break — something to mark this moment of transition.</li>
+            <li>Adorn yourself for the voice you are growing into — not the one you have always used, but the one that is becoming.</li>
+            <li>Make a "talisman of speaking" — a small object that represents the courage it takes to be heard.</li>
+          </ol>
+          <div class="pass-note">✦ Wearable or visual art both welcome here. Take your talisman with you if you wish.</div>
+        </div>
+      </div>
+
+      <!-- 7. Open Intuitive -->
+      <div class="station-card" onclick="toggleStation(this)" style="animation-delay:0.48s">
+        <div class="station-num">Station VII</div>
+        <div class="station-name">Open Intuitive</div>
+        <div class="station-tagline">Follow What Arises</div>
+        <p style="font-size:0.88rem; color:var(--silver); line-height:1.6;">No prompts. No instructions. Just presence.</p>
+        <div class="station-prompts">
+          <p>This station has no prompts. You may use any materials, any modality, or none at all.</p>
+          <p>You may sit in silence. You may use the materials in ways they weren't intended. You may work across multiple mediums at once.</p>
+          <p>The only question is: what wants to happen, if you stop directing and start listening?</p>
+          <div class="pass-note">✦ Sitting quietly or doing nothing is a full and complete use of this station.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       PAGE IV — Integration
+  ═══════════════════════════════════════ -->
+  <div class="page" id="page3">
+
+    <div class="card">
+      <div class="section-eyebrow">Integration</div>
+      <h2>Returning to Words</h2>
+      <p>Take a few moments to settle. Breathe. Let whatever arose in the stations begin to land. These reflections are for you — private unless you choose to share.</p>
+    </div>
+
+    <div class="card card-dark">
+      <h3>Reflection Prompts</h3>
+      <div class="reflection-grid">
+
+        <div class="reflect-item">
+          <label>What station called to you most?</label>
+          <textarea id="r1" placeholder="Which station, and what happened there…"></textarea>
+        </div>
+
+        <div class="reflect-item">
+          <label>What came as a surprise?</label>
+          <textarea id="r2" placeholder="Something unexpected that emerged…"></textarea>
+        </div>
+
+        <div class="reflect-item">
+          <label>A silence you noticed in yourself today…</label>
+          <textarea id="r3" placeholder="A moment of quiet — what kind was it?"></textarea>
+        </div>
+
+        <div class="reflect-item">
+          <label>Something that wants to be voiced…</label>
+          <textarea id="r4" placeholder="Not necessarily aloud — just acknowledged…"></textarea>
+        </div>
+
+        <div class="reflect-item">
+          <label>What does your body want to say right now?</label>
+          <textarea id="r5" placeholder="A sensation, a posture, a gesture…"></textarea>
+        </div>
+
+        <div class="reflect-item">
+          <label>One thing you are taking with you…</label>
+          <textarea id="r6" placeholder="An image, a feeling, a question, a word…"></textarea>
+        </div>
+
+        <div class="reflect-item reflect-full">
+          <label>Anything else that wants space here…</label>
+          <textarea id="r7" style="min-height:80px;" placeholder="Open space for whatever is present…"></textarea>
+        </div>
+      </div>
+
+      <div style="margin-top:1rem; display:flex; align-items:center; flex-wrap:wrap;">
+        <button class="btn" onclick="saveReflections()">Save Reflections</button>
+        <button class="btn btn-ghost" onclick="clearReflections()">Clear</button>
+        <span id="saved-note">✦ Saved to this device</span>
+      </div>
+    </div>
+
+    <div class="closing-card">
+      <h3>Closing</h3>
+      <p>"Speak your truth quietly and clearly; and listen to others, even to the dull and ignorant — they too have their story."</p>
+      <p style="font-family:'Cinzel',serif; font-size:0.7rem; letter-spacing:0.2em; color:var(--amber); margin-top:0.5rem; margin-bottom:2rem;">— Max Ehrmann, Desiderata</p>
+      <p>What you made today does not have to be shared. What you discovered does not have to be explained. You showed up. You listened — to your voice, to your silence, to whatever lives between the two.</p>
+      <p>That is enough. That is everything.</p>
+    </div>
+
+    <div class="crisis-bar">
+      <span>Support Resources</span>
+      <a href="tel:988">988 Suicide &amp; Crisis Lifeline — call or text 988</a>
+      <a href="tel:741741">Crisis Text Line — text HOME to 741741</a>
+      <a href="tel:18006624357">SAMHSA Helpline — 1-800-662-4357</a>
+    </div>
+
+  </div>
+
+</div><!-- /container -->
+
+<script>
+  // Page navigation
+  function showPage(n) {
+    document.querySelectorAll('.page').forEach((p, i) => p.classList.toggle('active', i === n));
+    document.querySelectorAll('.nav-pill').forEach((p, i) => p.classList.toggle('active', i === n));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Psychoed expand/collapse
+  function togglePsych(card) {
+    card.classList.toggle('open');
+  }
+
+  // Station expand/collapse
+  function toggleStation(card) {
+    const was = card.classList.contains('expanded');
+    document.querySelectorAll('.station-card').forEach(c => c.classList.remove('expanded'));
+    if (!was) card.classList.add('expanded');
+  }
+
+  // Voice/Silence orientation toggle
+  const vsDescriptions = {
+    voice: "Exploring what wants to be expressed today",
+    silence: "Honoring the wisdom in what remains unspoken"
+  };
+  function setOrientation(type) {
+    document.getElementById('voiceBtn').className = 'vs-btn' + (type === 'voice' ? ' active-voice' : '');
+    document.getElementById('silenceBtn').className = 'vs-btn' + (type === 'silence' ? ' active-silence' : '');
+    document.getElementById('vs-desc').textContent = vsDescriptions[type];
+  }
+
+  // Breath orb cycle
+  const orb = document.getElementById('breathOrb');
+  const phases = ['Breathe\nin', 'Hold', 'Breathe\nout', 'Rest'];
+  let phase = 0;
+  setInterval(() => {
+    phase = (phase + 1) % phases.length;
+    orb.querySelector('.orb-label').textContent = phases[phase];
+  }, 4000);
+
+  // Reflections persistence
+  function saveReflections() {
+    const data = {};
+    for (let i = 1; i <= 7; i++) {
+      const el = document.getElementById('r' + i);
+      if (el) data['r' + i] = el.value;
+    }
+    try {
+      localStorage.setItem('voiceAndSilence_reflections', JSON.stringify(data));
+      const note = document.getElementById('saved-note');
+      note.style.display = 'inline';
+      setTimeout(() => note.style.display = 'none', 3000);
+    } catch(e) {}
+  }
+
+  function clearReflections() {
+    if (confirm('Clear all your reflections? This cannot be undone.')) {
+      for (let i = 1; i <= 7; i++) {
+        const el = document.getElementById('r' + i);
+        if (el) el.value = '';
+      }
+      localStorage.removeItem('voiceAndSilence_reflections');
+    }
+  }
+
+  window.addEventListener('load', () => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('voiceAndSilence_reflections'));
+      if (saved) {
+        for (let i = 1; i <= 7; i++) {
+          const el = document.getElementById('r' + i);
+          if (el && saved['r' + i]) el.value = saved['r' + i];
+        }
+      }
+    } catch(e) {}
+  });
+</script>
+</body>
+</html>
